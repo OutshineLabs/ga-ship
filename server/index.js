@@ -2,6 +2,7 @@ import Hull from "hull";
 import Promise from "bluebird";
 import express from "express";
 
+
 var google = require('googleapis');
 
 var reporting = google.analyticsreporting('v4');
@@ -34,9 +35,17 @@ const service = {
   }
 }
 
+/**
+ * Express application with static routing view engine,
+ * can be changed into a decorator/command pattern:
+ * patchedExpressApp = WebApp(expressApp);
+ * @type {HullApp}
+ */
 const connector = new Hull.Connector({ port, hostSecret, service });
 const app = express();
+
 connector.setupApp(app);
+
 
 app.use("/fetch-all", actionHandler((ctx, { query, body }) => {
   reporting.reports.batchGet({resource: {
@@ -53,32 +62,34 @@ app.use("/fetch-all", actionHandler((ctx, { query, body }) => {
 
 }));
 
-app.use("/webhook", batcherHandler((ctx, messages) => {
-  console.log("Batcher.messages", messages);
-}));
 
-app.use("/batch", batchHandler((ctx, users) => {
-  const { service } = ctx;
-  return service.sendUsers(users);
-}, { batchSize: 100, groupTraits: true }));
+ app.use("/webhook", batcherHandler((ctx, messages) => {
+   console.log("Batcher.messages", messages);
+ }));
 
-app.use("/notify", notifHandler({
-  userHandlerOptions: {
-    groupTraits: true,
-    maxSize: 6,
-    maxTime: 10000
-  },
-  handlers: {
-    "ship:update": (ctx, messages) => {
-      console.log("ship was updated");
-    },
-    "user:update": (ctx, messages) => {
-      const { client } = ctx;
-      console.log("users was updated", messages[0]);
-      client.logger.info("user was updated", messages.map(m => m.user.email));
-    }
-  }
-}));
+ app.use("/batch", batchHandler((ctx, users) => {
+   const { service } = ctx;
+   return service.sendUsers(users);
+ }, { batchSize: 100, groupTraits: true }));
+
+ app.use("/notify", notifHandler({
+   userHandlerOptions: {
+     groupTraits: true,
+     maxSize: 6,
+     maxTime: 10000
+   },
+   handlers: {
+     "ship:update": (ctx, messages) => {
+       console.log("ship was updated");
+     },
+     "user:update": (ctx, messages) => {
+       const { client } = ctx;
+       console.log("users was updated", messages[0]);
+       client.logger.info("user was updated", messages.map(m => m.user.email));
+     }
+   }
+ }));
+
 
 app.use("/auth", oAuthHandler({
   name: "Google",
@@ -104,8 +115,6 @@ app.use("/auth", oAuthHandler({
   },
   onAuthorize: (req) => {
     const { refreshToken, accessToken, expiresIn } = (req.account || {});
-
-
 
     oauth2Client.setCredentials({
       access_token: accessToken,
