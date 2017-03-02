@@ -21,7 +21,6 @@ export default {
     return Promise.reject();
   },
   onAuthorize: ({ account, hull }) => {
-    console.warn("Hello account: ", account);
     const { refreshToken, accessToken, expiresIn } = (account || {});
     return hull.client.updateSettings({
       refresh_token: refreshToken,
