@@ -1,32 +1,46 @@
 {
-  "name": "Example",
+  "name": "Google GA",
   "description": "An example minimal ship",
-  "picture": "picture.png",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "tags": [
-    "outgoing",
     "incoming",
-    "batch",
     "oneColumn"
   ],
   "settings": [],
-  "private_settings": [],
-  "deployment_settings": [],
-  "resources": [],
+  "private_settings": [
+    {
+      "name": "refresh_token",
+      "type": "string",
+      "format" : "hidden"
+    },
+    {
+      "name": "access_token",
+      "type": "string",
+      "format" : "hidden"
+    },
+    {
+      "name" : "view_id",
+      "description" : "View ID",
+      "type" : "string"
+    },
+    {
+      "name" : "dimensions",
+      "description" : "Dimensions",
+      "type" : "array",
+      "items": { "type" : "string" },
+      "format" : "select",
+      "options": {
+        "allowCreate" : true
+      },
+      "default": ["source", "medium", "channelGrouping", "adContent", "campaign"]
+    }
+  ],
   "readme": "readme.md",
   "admin": "/auth/",
   "ui": false,
-  "subscriptions": [
-    {
-      "url": "/notify"
-    }
-  ],
   "schedules": [{
-      "url": "/fetch-all",
+      "url": "/sync",
       "type": "cron",
-      "value": "*/1 * * * *",
-      "params": {
-        "foo": "bar"
-      }
+      "value": "*/1 * * * *"
     }]
 }
