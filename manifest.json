@@ -6,6 +6,7 @@
     "incoming",
     "oneColumn"
   ],
+  "subscriptions" : [ { "url" : "/notify" } ],
   "settings": [],
   "private_settings": [
     {
