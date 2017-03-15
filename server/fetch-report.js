@@ -1,10 +1,13 @@
 import Google from "googleapis";
 
+import hull from 'hull';
+
 const Reporting = Google.analyticsreporting('v4');
 
 export default function fetchReport({ client, ship }, { startDate }) {
 
-  const { access_token, refresh_token, dimensions, view_id } = ship.private_settings;
+
+  const { access_token, refresh_token, dimensions, view_id, client_id } = ship.private_settings;
 
 
   if (!access_token || !view_id) {
@@ -38,18 +41,58 @@ export default function fetchReport({ client, ship }, { startDate }) {
       }]
     }
   }, (err, data) => {
-    if (err) return client.logger.info("fethReport error", err);
+    if (err) return client.logger.info("fetchReport error", err);
 
     console.warn("Boom, here is our report");
     console.log(JSON.stringify({ err, data }));
 
-    // const { client_id, source, medium } = manipulated_data;
 
-    // hull.as({ anonymous_id: client_id }).traits({
-    //   first_touch_source, first_touch_medium
-    // }, { source: 'google_analytics' });
+    let reports = data.reports;
 
-    client.logger.info("fethReport done");
+    reports.forEach((report, i) => {
+      let columnHeader = report.columnHeader;
+      let dimensionHeaders = columnHeader.dimensions;
+      let metricHeaders = columnHeader.metricHeader.metricHeaderEntries;
+
+      let rows = report.data.rows;
+      reports[i] = [];
+
+      rows.forEach((row, j) => {
+        let rowObj = {};
+        row.dimensions.forEach((dimension, k) => {
+          rowObj[dimensionHeaders[k]] = dimension;
+        });
+        reports[i].push(rowObj);
+      });
+    });
+
+    console.log(reports);
+
+
+
+    reports.forEach((report) => {
+
+      var clientIds = [];
+
+      report.forEach((row) => {
+
+        if(clientIds.indexOf(`ga:dimension${client_id}`) <= 1) {
+          client.logger.info('updating user', row['ga:dimension1']);
+          client.as({ guest_id: row['ga:dimension1'] }).traits(
+            row,
+            { source: 'google_analytics_first_touch' }
+          );
+        }
+
+        clientIds.push(`ga:dimension${client_id}`);
+
+      })
+    });
+
+
+
+    client.logger.info("fetchReport done");
+    return true;
   });
 
 

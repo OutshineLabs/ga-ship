@@ -24,6 +24,11 @@
       "type" : "string"
     },
     {
+      "name" : "client_id",
+      "description" : "Client Id Index (Dimension X)",
+      "type" : "string"
+    },
+    {
       "name" : "dimensions",
       "description" : "Dimensions",
       "type" : "array",
@@ -39,8 +44,8 @@
   "admin": "/auth/",
   "ui": false,
   "schedules": [{
-      "url": "/sync",
+      "url": "/firstTouchSync",
       "type": "cron",
-      "value": "*/1 * * * *"
+      "value": "* * * * *"
     }]
 }

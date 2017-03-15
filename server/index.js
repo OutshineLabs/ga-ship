@@ -21,8 +21,8 @@ app.use("/fetch-all", actionHandler(({ service }) => {
   service.fetchReport({ startDate: "7daysago" });
 }));
 
-app.use("/sync", actionHandler(({ service }) => {
-  service.fetchReport({ startDate: "yesterday" });
+app.use("/firstTouchSync", actionHandler(({ service }) => {
+  service.fetchReport({ startDate: "2017-01-01" });
 }));
 
 connector.startApp(app);
