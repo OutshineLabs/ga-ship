@@ -3,13 +3,13 @@ import { actionHandler, oAuthHandler, notifHandler } from "hull/lib/utils";
 import express from "express";
 
 import GoogleOauth from "./oauth";
-import fetchReport from "./fetch-report";
+import { reports } from "./fetch-report";
 import userUpdate from "./user-update";
 
 const connector = new Connector({
   port: process.env.PORT || 8082,
   hostSecret: process.env.SECRET || process.env.CLIENT_SECRET,
-  service: { fetchReport }
+  service: { reports }
 });
 
 const app = express();
@@ -19,11 +19,18 @@ connector.setupApp(app);
 app.use("/auth", oAuthHandler(GoogleOauth));
 
 app.use("/fetch-all", actionHandler(({ service }) => {
-  service.fetchReport({ startDate: "7daysago" });
+  console.log(service);
+  service.reports.firstTouchReport({ startDate: "7daysago" });
 }));
 
 app.use("/firstTouchSync", actionHandler(({ service }) => {
-  service.fetchReport({ startDate: "2017-01-01" });
+  console.log(service);
+  service.reports.firstTouchReport({ startDate: "2017-01-01" });
+}));
+
+app.use("/conversionTouchSync", actionHandler(({ service }) => {
+  console.log(service);
+  service.reports.conversionTouchReport({ startDate: "2017-01-01" });
 }));
 
 app.use("/notify", notifHandler({
@@ -35,7 +42,7 @@ app.use("/notify", notifHandler({
     console.log("notification handler subscribed");
   },
   handlers: {
-    "user:update": userUpdate
+    "user:update":    (notif, context) => context.hull.logger.warn(user)
   }
 }));
 

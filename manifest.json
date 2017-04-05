@@ -30,7 +30,18 @@
       "type" : "string"
     },
     {
-      "name" : "dimensions",
+      "name" : "first_touch_dimensions",
+      "description" : "Dimensions",
+      "type" : "array",
+      "items": { "type" : "string" },
+      "format" : "select",
+      "options": {
+        "allowCreate" : true
+      },
+      "default": ["source", "medium", "channelGrouping", "adContent", "campaign"]
+    },
+    {
+      "name" : "conversion_dimensions",
       "description" : "Dimensions",
       "type" : "array",
       "items": { "type" : "string" },
@@ -44,9 +55,15 @@
   "readme": "readme.md",
   "admin": "/auth/",
   "ui": false,
-  "schedules": [{
-      "url": "/firstTouchSync",
-      "type": "cron",
-      "value": "* * * * *"
-    }]
+  "schedules": [
+    {
+        "url": "/firstTouchSync",
+        "type": "cron",
+        "value": "* * * * *"
+      },
+    {
+        "url": "/conversionTouchSync",
+        "type": "cron",
+        "value": "* * * * *"
+      }]
 }
