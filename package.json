@@ -57,7 +57,7 @@
     "bluebird": "^3.4.7",
     "express": "^4.14.1",
     "googleapis": "^17.1.0",
-    "hull": "^0.11.0-beta.1",
+    "hull": "0.11.0-beta.1",
     "passport-google-oauth20": "^1.0.0",
     "passport-hubspot": "github:unity/passport-hubspot"
   }
