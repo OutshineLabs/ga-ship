@@ -57,13 +57,13 @@
   "ui": false,
   "schedules": [
     {
-        "url": "/firstTouchSync",
-        "type": "cron",
-        "value": "* * * * *"
-      },
-    {
         "url": "/conversionTouchSync",
         "type": "cron",
         "value": "* * * * *"
-      }]
+      },
+      {
+          "url": "/firstTouchSync",
+          "type": "cron",
+          "value": "* * * * *"
+        }]
 }

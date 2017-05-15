@@ -75,8 +75,8 @@ function fetchFirstTouchReport({ client, ship }, { startDate }) {
       report.forEach((row) => {
 
         if(clientIds.indexOf(`ga:dimension${client_id}`) <= 1) {
-
-          client.as({ guest_id: row['ga:dimension1'] }).traits(
+          console.log("client id", row['ga:dimension1'])
+          client.asUser({ anonymous_id: row['ga:dimension1'] }).traits(
             row,
             { source: 'google_analytics_first_touch' }
           );
@@ -156,18 +156,22 @@ function fetchConversionTouchReport({ client, ship }, { startDate }) {
       });
     });
 
+    console.log(reports);
+
     reports.forEach((report) => {
       var ids = [];
       report.forEach(row => {
         ids.push(row['ga:dimension1']);
       })
+      console.log("ids", ids);
 
       client.post('search/user_reports', { raw: true, query: { terms: { anonymous_ids: ids }}})
       .then((users) => {
         users.data.forEach((user) => {
           report.forEach(row => {
             if(user.traits_conversionid === row['ga:dimension2']) {
-              client.as({ guest_id: row['ga:dimension1'] }).traits(
+              console.log(row);
+              client.asUser({ anonymous_id: row['ga:dimension1'] }).traits(
                 row,
                 { source: 'google_analytics_conversion_touch' }
               );

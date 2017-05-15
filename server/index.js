@@ -19,17 +19,14 @@ connector.setupApp(app);
 app.use("/auth", oAuthHandler(GoogleOauth));
 
 app.use("/fetch-all", actionHandler(({ service }) => {
-  console.log(service);
   service.reports.firstTouchReport({ startDate: "7daysago" });
 }));
 
 app.use("/firstTouchSync", actionHandler(({ service }) => {
-  console.log(service);
   service.reports.firstTouchReport({ startDate: "2017-01-01" });
 }));
 
 app.use("/conversionTouchSync", actionHandler(({ service }) => {
-  console.log(service);
   service.reports.conversionTouchReport({ startDate: "2017-01-01" });
 }));
 
@@ -42,7 +39,8 @@ app.use("/notify", notifHandler({
     console.log("notification handler subscribed");
   },
   handlers: {
-    "user:update":    (notif, context) => context.hull.logger.warn(user)
+    "user:update":    (notif, context) => userUpdate(notif, context),
+    "users-segment:update":    (notif, context) => userUpdate(notif, context)
   }
 }));
 
