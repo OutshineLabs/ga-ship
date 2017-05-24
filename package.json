@@ -1,13 +1,13 @@
 {
-  "name": "hull-example",
-  "description": "Minimal working ship",
-  "version": "0.2.4",
-  "homepage": "https://github.com/hull-ships/hull-example",
+  "name": "Google Analytics Ship",
+  "description": "GA <-> Hull",
+  "version": "0.1",
+  "homepage": "https://github.com/OutshineLabs/ga-ship",
   "license": "MIT",
   "author": {
-    "name": "Hull",
-    "email": "contact@hull.io",
-    "url": "https://github.com/hull"
+    "name": "Colin White",
+    "email": "colinwhite93@gmail.com",
+    "url": "https://github.com/MaybeColin"
   },
   "engines": {
     "node": "6.x",
@@ -15,10 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/hull-ships/hull-example"
-  },
-  "bugs": {
-    "url": "https://github.com/hull-ships/hull-example/issues"
+    "url": "git://github.com/outshinelabs/ga-ship"
   },
   "scripts": {
     "build": "npm run clean && npm run build:server",
@@ -39,8 +36,7 @@
     "webhooks",
     "integration",
     "user",
-    "sync",
-    "example"
+    "sync"
   ],
   "devDependencies": {
     "babel-cli": "^6.14.0",
