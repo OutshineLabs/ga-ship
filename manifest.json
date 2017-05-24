@@ -25,6 +25,11 @@
       "type" : "string"
     },
     {
+      "name" : "uaid",
+      "description" : "UA ID",
+      "type" : "string"
+    },
+    {
       "name" : "client_id",
       "description" : "Client Id Index (Dimension X)",
       "type" : "string"
@@ -50,20 +55,36 @@
         "allowCreate" : true
       },
       "default": ["source", "medium", "channelGrouping", "adContent", "campaign"]
+    },
+    {
+      "name" : "leads_mapping",
+      "title" : "List of Dimensions to push to Google Analytics",
+      "type" : "array",
+      "format" : "table",
+      "items" : {
+        "type" : "object",
+        "properties" : {
+          "hull_field_name" : {
+            "type" : "string",
+            "format" : "trait",
+            "title" : "Hull Field"
+          },
+          "google_analytics_dimension" : {
+            "type" : "string",
+            "title" : "Google Analytics Dimension"
+
+          }
+        },
+        "required" : [
+          "hull_field_name",
+          "google_analytics_dimension"
+        ]
+      }
     }
   ],
   "readme": "readme.md",
   "admin": "/auth/",
   "ui": false,
   "schedules": [
-    {
-        "url": "/conversionTouchSync",
-        "type": "cron",
-        "value": "* * * * *"
-      },
-      {
-          "url": "/firstTouchSync",
-          "type": "cron",
-          "value": "* * * * *"
-        }]
+    ]
 }

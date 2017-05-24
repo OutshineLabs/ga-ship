@@ -6,37 +6,43 @@ import ua from "universal-analytics"
 export default function userUpdate(ctx, messages) {
   const { client } = ctx;
   client.logger.info("processing messages", messages.length);
+
+
+  const { access_token, refresh_token, uaid, client_id, leads_mapping} = ship.private_settings;
+
+  if (!access_token || !uaid) {
+    client.logger.warn("Skip Sync - Missing configuration");
+    return false;
+  }
+
+
+  console.log(messages);
+
   messages.map((message) => {
     const { user, changes } = message;
 
-    console.log('THIS IS THE USER', user);
-    console.log('THESE ARE THE CHANGES', changes);
 
-    if(changes.user['traits_salesforce_lead/status']) {
-      var visitor = ua('UA-18835138-1');
+    var params = {};
+
+    if(changes) {
+      leads_mapping.forEach((lead_map) => {
+        if(changes.user[lead_map.hull_field_name]) {
+          params[`cd${lead_map.google_analytics_dimension}`] = changes.user[lead_map.hull_field_name][1];
+        }
+      })
+    }
+    if(Object.keys(params).length > 0) {
+      var visitor = ua(uaid);
       var session_id = Date.now() * 1000 + "" + uuid()
 
-      var params = {
-          'cid': user.anonymous_ids[0],
-          'ec': 'Status Update',
-          'ea': changes.user['traits_salesforce_lead/status'][1],
+      params['cid'] = user.traits_clientid || user.anonymous_ids[0];
+      params['ec'] = 'Status Update';
+      params['ea'] =  'Hull User Update';
 
-          'cd1': user.anonymous_ids[0],
-          'cd3': changes.user['traits_salesforce_lead/status'][1]
-
-      };
 
       visitor.event(params, function(err, res) {
-        console.log(err);
-        console.log(res);
+
       })
-      // let query = Object.keys(params).map((i) => i+'='+params[i]).join('&');
-      // console.log(encodeURI(query));
-      // request.post('https://www.google-analytics.com/debug/collect', encodeURI(query) ,function(err,httpResponse,body){
-      //   console.log('err', err);
-      //   console.log('httpRes', httpResponse);
-      //   console.log('res', body);
-      // })
     }
   })
 }
