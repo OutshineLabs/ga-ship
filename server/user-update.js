@@ -8,7 +8,7 @@ export default function userUpdate(ctx, messages) {
   client.logger.info("processing messages", messages.length);
 
 
-  const { access_token, refresh_token, uaid, client_id, leads_mapping} = ship.private_settings;
+  const { access_token, refresh_token, uaid, client_id, leads_mapping} = ctx.ship.private_settings;
 
   if (!access_token || !uaid) {
     client.logger.warn("Skip Sync - Missing configuration");
@@ -31,6 +31,9 @@ export default function userUpdate(ctx, messages) {
         }
       })
     }
+
+    params[`cd${client_id}`] = user.traits_clientid || user.anonymous_ids[0];
+
     if(Object.keys(params).length > 0) {
       var visitor = ua(uaid);
       var session_id = Date.now() * 1000 + "" + uuid()
