@@ -34,6 +34,8 @@ export default function userUpdate(ctx, messages) {
 
     params[`cd${client_id}`] = user.traits_clientid || user.anonymous_ids[0];
 
+    var label = JSON.stringify(params);
+
     if(Object.keys(params).length > 0 && params[`cd${client_id}`]) {
       var visitor = ua(uaid);
       var session_id = Date.now() * 1000 + "" + uuid()
@@ -41,6 +43,7 @@ export default function userUpdate(ctx, messages) {
       params['cid'] = user.traits_clientid || user.anonymous_ids[0];
       params['ec'] = 'Status Update';
       params['ea'] =  'Hull User Update';
+      params['el'] = label;
 
 
       visitor.event(params, function(err, res) {
